@@ -1,0 +1,83 @@
+#include <iostream>
+#include <boost/multiprecision/cpp_bin_float.hpp>
+#include <cmath>
+#include <iomanip>
+#include <string>
+#include <limits>
+#include <vector>
+
+template <typename T>
+void Iteracje(const std::string& type_name) {
+	std::cout << "--- Uruchomienie dla: " << type_name << " ---" << std::endl;
+	std::cout << std::scientific << std::setprecision(std::numeric_limits<T>::max_digits10);
+
+	T x_0 = static_cast<T>(4.0);
+	T x_1 = static_cast<T>(4.25);
+	T target_val = static_cast<T>(5.0);
+
+	const T C108 = static_cast<T>(108.0);
+	const T C815 = static_cast<T>(815.0);
+	const T C1500 = static_cast<T>(1500.0);
+	const T border = static_cast<T>(0.99);
+
+	std::cout << "x_0 = " << x_0 << "\n";
+	std::cout << "x_1 = " << x_1 << "\n";
+
+	int steps_to_border = -1;
+	bool diverged = false;
+	const int max_steps = 1000;
+
+	std::vector<std::pair<int, T>> last_five_steps;
+
+	for (int n = 2; n <= max_steps; ++n) {
+		T x_n = C108 - (C815 - (C1500 / x_0)) / x_1;
+
+		if (!diverged) {
+			T diff = abs(x_n - target_val);
+
+			if (diff > border || std::isnan(x_n) || std::isinf(x_n)) {
+				diverged = true;
+				steps_to_border = n - 2;
+
+				std::cout << "\n--- OSTATNIE 5 POPRAWNYCH KROKOW ---\n";
+				for (const auto& step : last_five_steps) {
+					std::cout << "x_n = " << step.second << ", dla n = " << step.first << "\n";
+				}
+				std::cout << "--- KROK ROZBIEZNY ---\n";
+				std::cout << "x_n = " << x_n << ", dla n = " << n << "\n\n";
+			}
+		}
+
+		last_five_steps.push_back({ n, x_n });
+
+		if (last_five_steps.size() > 5) {
+			last_five_steps.erase(last_five_steps.begin());
+		}
+
+		x_0 = x_1;
+		x_1 = x_n;
+	}
+
+	std::cout.unsetf(std::ios_base::floatfield);
+	std::cout << std::setprecision(6);
+
+	std::cout << "Wynik dla " << type_name << ":\n";
+	if (diverged) {
+		std::cout << "Wartosci przestaly zbiegac do 5 po " << steps_to_border << " krokach\n";
+	}
+	else {
+		std::cout << "Wartosci zbiegaja do 5 w " << max_steps << " krokow\n";
+	}
+	std::cout << "---------------------------------------------------------\n\n";
+
+}
+
+
+int main()
+{
+	Iteracje<float>("float");
+	Iteracje<double>("double");
+	Iteracje<long double>("long double");
+	Iteracje<boost::multiprecision::cpp_bin_float_quad>("Iteracje<boost::multiprecision::cpp_bin_float_quad>");
+	return 0;
+}
