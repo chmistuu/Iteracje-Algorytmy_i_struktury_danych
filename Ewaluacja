@@ -1,0 +1,36 @@
+#include <iostream>
+#include <limits>
+#include <iomanip>
+#include <cmath>
+#include <string>
+#include <boost/multiprecision/cpp_bin_float.hpp>
+
+template <typename T>
+void Ewaluacja(const std::string& type_name) {
+	std::cout << "--- Uruchomienie dla: " << type_name << " ---" << std::endl;
+	std::cout << std::scientific << std::setprecision(4);
+
+	const T x = static_cast<T>(77617.0);
+	const T y = static_cast<T>(33096.0);
+
+	const T C333_75 = static_cast<T>(333.75);
+	const T C11 = static_cast<T>(11.0);
+	const T C121 = static_cast<T>(121.0);
+	const T C2 = static_cast<T>(2.0);
+	const T C5_5 = static_cast<T>(5.5);
+
+	T g = C333_75 * pow(y, 6) + pow(x, 2) * (C11 * pow(x, 2) * pow(y, 2) - pow(y, 6) - C121 * pow(y, 4) - C2) + C5_5 * pow(y, 8) + (x / (C2 * y));
+
+	std::cout << "Wynik dla " << type_name << ":\n";
+	std::cout << g << "\n";
+}
+
+int main()
+{
+	Ewaluacja<float>("Float");
+	Ewaluacja<double>("Double");
+	Ewaluacja<long double>("Long Double");
+	Ewaluacja<boost::multiprecision::cpp_bin_float_quad>("boost::multiprecision::cpp_bin_float_quad");
+	Ewaluacja<boost::multiprecision::number<boost::multiprecision::cpp_bin_float<2000>>>("boost::multiprecision::number<boost::multiprecision::cpp_bin_float<2000>>");
+	return 0;
+}
