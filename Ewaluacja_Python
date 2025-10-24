@@ -1,0 +1,16 @@
+from mpmath import *
+
+def ewaluacja(precyzja, x, y):
+    mp.dps = precyzja
+    x = mp.mpf(x)
+    y = mp.mpf(y)
+    return mp.nstr(mp.mpf('333.75')*pow(y, 6) + pow(x, 2)*(mp.mpf('11')*pow(x, 2)*pow(y, 2) - pow(y, 6) - mp.mpf('121')*pow(y, 4) - 2) + mp.mpf('5.5')*pow(y, 8) + (x/(mp.mpf('2')*y)), n = 5, strip_zeros=False, min_fixed=0)
+
+precyzje = [5, 10, 50, 100, 2000]
+
+x = 77617.0
+y = 33096.0
+
+for p in precyzje:
+    print(f"\nWynik dla precyzji {p} dla 5 cyfr znaczacych\n")
+    print(ewaluacja(p, x, y))
