@@ -1,0 +1,30 @@
+using Printf
+
+function ewaluacja(prec, x, y)
+    setprecision(prec)
+    x = BigFloat(x)
+    y = BigFloat(y)
+
+    C333_75 = BigFloat(333.75)
+    C11 = BigFloat(11.0)
+    C121 = BigFloat(121.0)
+    C2 = BigFloat(2.0)
+    C5_5 = BigFloat(5.5)
+
+    g = C333_75 * y^6 + x^2 * (C11 * x^2 * y^2 - y^6 - C121 * y^4 - C2) + C5_5 * y^8 + (x / (C2 * y))
+    return g
+end
+
+function main()
+    precyzje = [16, 32, 64, 128, 2000]
+    x = 77617.0
+    y = 33096.0
+
+    for p in precyzje
+        println("=== Wynik dla precyzji $p bitów (5 cyfr znaczących) ===")
+        g = ewaluacja(p, x, y)
+        @printf("%.5e\n\n", g)
+    end
+end
+
+main()
