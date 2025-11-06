@@ -1,0 +1,70 @@
+using Printf
+
+function iteracje(prec, type_name)
+    setprecision(prec)
+    println("="^70)
+    println("Uruchomienie dla: $type_name   (precyzja: $prec bitów)")
+    println("="^70)
+
+    x0 = BigFloat(4.0)
+    x1 = BigFloat(4.25)
+    target_val = BigFloat(5.0)
+
+    C108 = BigFloat(108.0)
+    C815 = BigFloat(815.0)
+    C1500 = BigFloat(1500.0)
+
+    max_steps = 1000
+    last_diff = nothing
+    diverged = false
+    steps_to_diverge = 0
+
+    println(rpad("n", 5), " | ", rpad("x_n", 25), " | ", rpad("|x_n - 5|", 25))
+    println("-"^70)
+
+    for n in 2:max_steps
+        x_n = C108 - (C815 - (C1500 / x0)) / x1
+        diff = abs(x_n - target_val)
+
+        if n <= 20 || n % 10 == 0
+            @printf("%5d | %25.15e | %25.15e\n", n, x_n, diff)
+        end
+
+        if isnan(x_n) || isinf(x_n)
+            diverged = true
+            steps_to_diverge = n
+            println("Błąd: NaN lub Inf w kroku n=$n")
+            break
+        end
+
+        if last_diff !== nothing && diff > last_diff
+            diverged = true
+            steps_to_diverge = n
+            println("Rozbieżność zaczyna się w kroku n=$n")
+            break
+        end
+
+        last_diff = diff
+        x0, x1 = x1, x_n
+    end
+
+    println("-"^70)
+    if diverged
+        println("Wartości przestały zbiegać do 5 po $steps_to_diverge krokach.")
+    else
+        println("Wartości zbiegają do 5 po $max_steps krokach.")
+    end
+    println("="^70)
+    println()
+end
+
+
+function main()
+    iteracje(64,  "float")
+    iteracje(128, "double")
+    iteracje(256, "long double")
+    iteracje(512, "float128")
+    iteracje(1024, "float256")
+end
+
+main()
