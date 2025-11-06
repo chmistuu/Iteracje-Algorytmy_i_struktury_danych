@@ -1,1 +1,66 @@
+from mpmath import mp, isnan, isinf
 
+def iteracje(prec, type_name):
+    mp.dps = prec
+    print("=" * 70)
+    print(f"Uruchomienie dla: {type_name}   (precyzja: {prec} cyfr dziesiętnych)")
+    print("=" * 70)
+
+    x0 = mp.mpf('4.0')
+    x1 = mp.mpf('4.25')
+    target_val = mp.mpf('5.0')
+
+    C108 = mp.mpf('108.0')
+    C815 = mp.mpf('815.0')
+    C1500 = mp.mpf('1500.0')
+
+    max_steps = 1000
+    last_diff = None
+    diverged = False
+    steps_to_diverge = None
+
+    print(f"{'n':>5} | {'x_n':>20} | {'|x_n - 5|':>20}")
+    print("-" * 55)
+
+    for n in range(2, max_steps + 1):
+        x_n = C108 - (C815 - (C1500 / x0)) / x1
+        diff = abs(x_n - target_val)
+
+        # wypisuj pierwsze 20 kroków, potem co 10
+        if n <= 20 or n % 10 == 0:
+            print(f"{n:5d} | {float(x_n):20.12f} | {float(diff):20.12e}")
+
+        if isnan(x_n) or isinf(x_n):
+            diverged = True
+            steps_to_diverge = n
+            print(f"Błąd: NaN lub inf w kroku n={n}")
+            break
+
+        if last_diff is not None and diff > last_diff:
+            diverged = True
+            steps_to_diverge = n
+            print(f"Rozbieżność zaczyna się w kroku n={n}")
+            break
+
+        last_diff = diff
+        x0, x1 = x1, x_n
+
+    print("-" * 55)
+    if diverged:
+        print(f"Wartości przestały zbiegać do 5 po {steps_to_diverge} krokach.")
+    else:
+        print(f"Wartości zbiegają do 5 po {max_steps} krokach.")
+    print("=" * 70)
+    print()
+
+
+def main():
+    iteracje(16,  "float")
+    iteracje(32,  "double")
+    iteracje(64,  "long double")
+    iteracje(128, "float128")
+    iteracje(256, "float256")
+
+
+if __name__ == "__main__":
+    main()
