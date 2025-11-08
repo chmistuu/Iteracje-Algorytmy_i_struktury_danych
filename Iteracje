@@ -79,5 +79,6 @@ int main()
 	Iteracje<double>("double");
 	Iteracje<long double>("long double");
 	Iteracje<boost::multiprecision::cpp_bin_float_quad>("Iteracje<boost::multiprecision::cpp_bin_float_quad>");
+	Iteracje<boost::multiprecision::number<boost::multiprecision::cpp_bin_float<2000>>>("boost::multiprecision::number<boost::multiprecision::cpp_bin_float<2000>>");
 	return 0;
 }
