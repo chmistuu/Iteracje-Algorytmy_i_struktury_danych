@@ -1,0 +1,39 @@
+#include <iostream>
+#include <stack>
+#include <vector>
+#include <fstream>
+#include <utility>
+
+template <typename T>
+void Quick_sort(T A[]) {
+	int lewy, prawy, i, j;
+	std::stack<T> Stos;
+	const int m = 4;	
+	
+	void Partycja(int l, int p) {
+		double x;
+		for (i = l & j = p; x = (A[i + j] / 2); i > j) {
+			while (A[i] < x) {
+				i++;
+			}
+			while (x < A[j]) {
+				j--;
+			}
+			if (i <= j) {
+				std::swap(A[i], A[j]);
+				i = i++;
+				j = j--;
+			}
+		}
+	}
+
+
+
+}
+
+int main() {
+	std::vector<T> dane_z_pliku;
+	std::ifstream plik("");
+
+
+}
